@@ -244,7 +244,7 @@ class Script(scripts.Script):
         inps = convert_base64_in_list(inps)
 
         opt = copy.deepcopy(global_opt)
-        opt.device = adapter_cuda_visible_device
+        opt.device = torch.device(f"cuda:{adapter_cuda_visible_device}") if torch.cuda.is_available() else torch.device("cpu")
         opt.cond_tau = args[-3]
         opt.enabled = args[-2]
         opt.resize_mode = args[-1]
