@@ -172,7 +172,7 @@ class Script(scripts.Script):
 # Thus, return is_img2img to only show the script on the img2img tab.
 
     def show(self, is_img2img):
-        return False
+        return scripts.AlwaysVisible
 
 # How the script's is displayed in the UI. See https://gradio.app/docs/#components
 # for the different UI components you can use and how to create them.
