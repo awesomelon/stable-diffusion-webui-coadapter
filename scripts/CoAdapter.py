@@ -157,7 +157,7 @@ class Script(scripts.Script):
         self.cond_models = {}
         self.coadapter_fuser = CoAdapterFuser(unet_channels=[320, 640, 1280, 1280], width=768, num_head=8, n_layes=3)
         self.coadapter_fuser.load_state_dict(torch.load(f'{FOLDER_PATH}/coadapter-fuser-sd15v1.pth'))
-        self.coadapter_fuser = self.coadapter_fuser.to(devices.get_device_for('T2I-Adapter'))
+        self.coadapter_fuser = self.coadapter_fuser.to(global_opt.device)
         self.network_cur = None
 
 # The title of the script. This is what will be displayed in the dropdown menu.
@@ -288,7 +288,7 @@ class Script(scripts.Script):
             else:
                 activated_conds.append(cond_name)
                 if cond_name in self.adapters:
-                    self.adapters[cond_name]['model'] = self.adapters[cond_name]['model'].to(devices.get_device_for('T2I-Adapter'))
+                    self.adapters[cond_name]['model'] = self.adapters[cond_name]['model'].to(global_opt.device)
                 else:
                     self.adapters[cond_name] = get_adapters(opt, getattr(ExtraCondition, cond_name))
                 self.adapters[cond_name]['cond_weight'] = cond_weight
