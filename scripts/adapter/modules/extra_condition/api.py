@@ -28,7 +28,7 @@ def get_cond_model(opt, cond_type: ExtraCondition):
     if cond_type == ExtraCondition.sketch:
         from scripts.adapter.modules.extra_condition.model_edge import pidinet
         model = pidinet()
-        ckp = torch.load(f'{FOLDER_PATH}/table5_pidinet.pth', map_location='cpu')['state_dict']
+        ckp = torch.load(f'{FOLDER_PATH}/table5_pidinet.pth', map_location=f"cuda:{adapter_cuda_visible_device}")['state_dict']
         model.load_state_dict({k.replace('module.', ''): v for k, v in ckp.items()}, strict=True)
         model.to(opt.device)
         return model
