@@ -12,6 +12,9 @@ from .body import Body
 
 remote_model_path = "https://huggingface.co/TencentARC/T2I-Adapter/blob/main/third-party-models/body_pose_model.pth"
 
+adapter_cuda_visible_device = int(os.getenv('DEVICE_ID')) if os.getenv('DEVICE_ID') else 0
+
+FOLDER_PATH = f"models/T2I-Adapter-{adapter_cuda_visible_device}"
 
 class OpenposeInference(nn.Module):
 
@@ -21,7 +24,7 @@ class OpenposeInference(nn.Module):
 
         if not os.path.exists(body_modelpath):
             from basicsr.utils.download_util import load_file_from_url
-            load_file_from_url(remote_model_path, model_dir='models/T2I-Adapter')
+            load_file_from_url(remote_model_path, model_dir=FOLDER_PATH)
 
         self.body_estimation = Body(body_modelpath)
 

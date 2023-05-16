@@ -100,14 +100,16 @@ urls = {
     'andite/anything-v4.0': ['anything-v4.5-pruned.ckpt', 'anything-v4.0.vae.pt'],
 }
 
-if os.path.exists('models/T2I-Adapter') == False:
-    os.mkdir('models/T2I-Adapter')
+FOLDER_PATH = f"models/T2I-Adapter-{adapter_cuda_visible_device}"
+
+if os.path.exists(FOLDER_PATH) == False:
+    os.mkdir(FOLDER_PATH)
 for repo in urls:
     files = urls[repo]
     for file in files:
         url = hf_hub_url(repo, file)
         name_ckp = url.split('/')[-1]
-        save_path = os.path.join('models/T2I-Adapter',name_ckp)
+        save_path = os.path.join(FOLDER_PATH,name_ckp)
         if os.path.exists(save_path) == False:
             subprocess.run(shlex.split(f'wget {url} -O {save_path}'))
 
@@ -119,13 +121,13 @@ supported_cond = ['style', 'color', 'sketch', 'depth', 'canny']
 # config
 class Params:
     def __init__(self):
-        self.sd_ckpt = 'models/T2I-Adapter/v1-5-pruned-emaonly.ckpt'
+        self.sd_ckpt = f'{FOLDER_PATH}/v1-5-pruned-emaonly.ckpt'
         self.vae_ckpt = None
 global_opt = Params()
 global_opt.config = os.path.join(scripts.basedir(),'configs/stable-diffusion/sd-v1-inference.yaml')
-for cond_name in supported_cond:
-    setattr(global_opt, f'{cond_name}_adapter_ckpt', f'models/T2I-Adapter/coadapter-{cond_name}-sd15v1.pth')
 global_opt.device = torch.device(f"cuda:{adapter_cuda_visible_device}") if torch.cuda.is_available() else torch.device("cpu")
+for cond_name in supported_cond:
+    setattr(global_opt, f'{cond_name}_adapter_ckpt', f'{FOLDER_PATH}/coadapter-{cond_name}-sd15v1.pth')
 global_opt.max_resolution = 512 * 512
 global_opt.resize_short_edge = 512 #None
 global_opt.sampler = 'ddim'
@@ -154,7 +156,7 @@ class Script(scripts.Script):
         self.adapters = {}
         self.cond_models = {}
         self.coadapter_fuser = CoAdapterFuser(unet_channels=[320, 640, 1280, 1280], width=768, num_head=8, n_layes=3)
-        self.coadapter_fuser.load_state_dict(torch.load(f'models/T2I-Adapter/coadapter-fuser-sd15v1.pth'))
+        self.coadapter_fuser.load_state_dict(torch.load(f'{FOLDER_PATH}/coadapter-fuser-sd15v1.pth'))
         self.coadapter_fuser = self.coadapter_fuser.to(devices.get_device_for('T2I-Adapter'))
         self.network_cur = None
 

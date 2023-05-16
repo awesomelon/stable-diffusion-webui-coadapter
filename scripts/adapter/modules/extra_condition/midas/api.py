@@ -12,11 +12,16 @@ from scripts.adapter.modules.extra_condition.midas.midas.midas_net_custom import
 from scripts.adapter.modules.extra_condition.midas.midas.transforms import Resize, NormalizeImage, PrepareForNet
 import modules.scripts as scripts
 
+adapter_cuda_visible_device = int(os.getenv('DEVICE_ID')) if os.getenv('DEVICE_ID') else 0
+
 # if not os.path.exists(os.path.join(scripts.basedir(),'models')):
 #     os.makedirs(os.path.join(scripts.basedir(),'models'))
+
+FOLDER_PATH = f"models/T2I-Adapter-{adapter_cuda_visible_device}"
+
 ISL_PATHS = {
-    "dpt_large": "models/T2I-Adapter/dpt_large-midas-2f21e586.pt",
-    "dpt_hybrid": "models/T2I-Adapter/dpt_hybrid-midas-501f0c75.pt",
+    "dpt_large": f"{FOLDER_PATH}/dpt_large-midas-2f21e586.pt",
+    "dpt_hybrid": f"{FOLDER_PATH}/dpt_hybrid-midas-501f0c75.pt",
     "midas_v21": "",
     "midas_v21_small": "",
 }
@@ -91,7 +96,7 @@ def load_model(model_type):
     elif model_type == "dpt_hybrid":  # DPT-Hybrid
         if not os.path.exists(model_path):
             from basicsr.utils.download_util import load_file_from_url
-            load_file_from_url(remote_model_path, model_dir='models/T2I-Adapter')
+            load_file_from_url(remote_model_path, model_dir=FOLDER_PATH)
 
         model = DPTDepthModel(
             path=model_path,
