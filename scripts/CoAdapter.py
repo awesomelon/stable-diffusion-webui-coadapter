@@ -163,7 +163,7 @@ class Script(scripts.Script):
 # The title of the script. This is what will be displayed in the dropdown menu.
     def title(self):
 
-        return "CoAdapter"
+        return "CoAdapterApi"
 
 
 # Determines when the script should be shown in the dropdown menu via the 
@@ -185,7 +185,7 @@ class Script(scripts.Script):
         ims2 = []
         cond_weights = []
         with gr.Group():
-            with gr.Accordion("CoAdapter", open=False):
+            with gr.Accordion("CoAdapter - 사용하지 말 것!!!", open=False):
                 enabled = gr.Checkbox(label='Enable (Light it up if you want to use this function.)', value=False)
                 resize_mode = gr.Radio(choices=['Consistent with the condition map', 'Controlled by resize sliders'], value='Consistent with the condition map', label="Resize Mode")
                 with gr.Row():
